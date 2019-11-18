@@ -27,6 +27,7 @@ app.use(bodyParser.json());
 //api to get the blocks
 app.get('/blocks',(req,res)=>{
 
+    
     res.json(blockchain.chain);
 
 });
