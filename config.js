@@ -1,5 +1,5 @@
 const TRANSACTION_FEE = 1;
-INITAL_BALANCE = 100;
+const INITAL_BALANCE = 100;
 module.exports = {
   TRANSACTION_FEE
 };

@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const P2pServer = require('./p2pserver.js');
 const blockchain = new Blockchain();
 const p2pserver = new P2pServer(blockchain);
-const Wallet = require('../wallet');
+const Wallet = require('../wallet/wallet');
 const TransactionPool = require('../wallet/transaction-pool');
 
 //get the port from the user or set the default port
@@ -42,6 +42,7 @@ app.post('/mine',(req,res)=>{
     let dataa = JSON.stringify(req.body.data);
     console.log(dataa);
     const blockb = blockchain.addBlock(dataa);
+    console.log(Date.now().toString());
     console.log(`New block added: ${blockb.toString()}`);
     p2pserver.syncChain();
     res.redirect('/blocks');
@@ -49,11 +50,12 @@ app.post('/mine',(req,res)=>{
 
 app.post("/transact", (req, res) => {
     const { to, amount, type } = req.body;
-    console.log(to+" "+amount+" "+type);
+    console.log(to+" "+amount+" "+type+" "+blockchain+" "+transactionPool);
     const transaction = wallet.createTransaction(
        to, amount, type, blockchain, transactionPool
     );
-res.redirect("/transactions");
+    //console.log(blockchain.addBlock("yao"));
+    res.redirect("/transactions");
 });
 
 // app server configurations

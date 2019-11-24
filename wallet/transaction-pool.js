@@ -2,6 +2,7 @@ const Transaction = require("../transaction");
 
 class TransactionPool {
   constructor() {
+    console.log("at t")
     this.transactions = [];
   }
 
