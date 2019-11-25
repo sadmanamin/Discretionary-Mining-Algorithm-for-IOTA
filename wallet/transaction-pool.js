@@ -8,8 +8,12 @@ class TransactionPool {
 
   addTransaction(transaction) {
     this.transactions.push(transaction);
+    if (this.transactions.length >= TRANSACTION_THRESHOLD) {
+      return true;
+    } else {
+      return false;
+    }
   }
-
   validTransactions() {
     return this.transactions.filter(transaction => {
       if (!Transaction.verifyTransaction(transaction)) {

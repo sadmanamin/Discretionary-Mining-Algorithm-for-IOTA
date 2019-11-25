@@ -7,14 +7,29 @@ class Wallet {
       this.balance = 0;
       this.keyPair = ChainUtil.genKeyPair(secret);
       this.publicKey = this.keyPair.getPublic("hex");
-      this.balance = I.INITAL_BALANCE;
+      //this.balance = I.INITAL_BALANCE;
       console.log("yao")
     }
 
     createTransaction(to, amount, type, blockchain, transactionPool) {
-        let transaction = Transaction.newTransaction(this, to, amount,type);
-        transactionPool.addTransaction(transaction);
-        return transaction;
+      this.balance = this.getBalance(blockchain);
+      if (amount > this.balance) {
+        console.log(
+          `Amount: ${amount} exceeds the current balance: ${this.balance}`
+        );
+        return;
+      }
+      let transaction = Transaction.newTransaction(this, to, amount, type);
+      transactionPool.addTransaction(transaction);
+      return transaction;
+    }
+
+    getBalance(blockchain) {
+      return blockchain.getBalance(this.publicKey);
+    }
+
+    getPublicKey() {
+      return this.publicKey;
     }
 
     hellu(){

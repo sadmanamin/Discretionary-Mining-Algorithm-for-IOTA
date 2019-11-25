@@ -42,6 +42,14 @@ class Blockchain{
         this.chain = newChain; 
     }
 
+    getBalance(publicKey) {
+        return this.accounts.getBalance(publicKey);
+    }
+
+    getLeader() {
+        return this.stakes.getMax(this.validators.list);
+    }
+
 }
 
 module.exports = Blockchain;
