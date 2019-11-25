@@ -12,7 +12,7 @@ class Wallet {
     }
 
     createTransaction(to, amount, type, blockchain, transactionPool) {
-        let transaction = Transaction.newTransaction(this, to, amount,                                                                                                    type);
+        let transaction = Transaction.newTransaction(this, to, amount,type);
         transactionPool.addTransaction(transaction);
         return transaction;
     }

@@ -1,11 +1,12 @@
 const express = require('express');
 const Blockchain = require('../blockchain');
 const bodyParser = require('body-parser');
-const P2pServer = require('./p2pserver.js');
+const P2pserver = require('./p2pserver.js');
 const blockchain = new Blockchain();
-const p2pserver = new P2pServer(blockchain);
+
 const Wallet = require('../wallet/wallet');
 const TransactionPool = require('../wallet/transaction-pool');
+const stringify = require('json-stringify-safe');
 
 //get the port from the user or set the default port
 console.log(process.env.HTTP_PORT);
@@ -15,6 +16,7 @@ const HTTP_PORT = process.env.HTTP_PORT || 3001;
 const app  = express();
 const wallet = new Wallet(Date.now().toString());
 const transactionPool = new TransactionPool();
+const p2pserver = new P2pserver(blockchain,transactionPool);
 
 //using the blody parser middleware
 app.use(bodyParser.json());
@@ -33,8 +35,9 @@ app.get('/blocks',(req,res)=>{
 });
 
 app.get('/transactions',(req,res)=>{
-    console.log("inside trans");
-    res.json(transactionPool.transactions);
+    console.log(transactionPool.transactions);
+    console.log(blockchain.chain);
+    res.json(stringify(transactionPool.transactions));
   });
 
 //api to add blocks
@@ -55,6 +58,7 @@ app.post("/transact", (req, res) => {
        to, amount, type, blockchain, transactionPool
     );
     //console.log(blockchain.addBlock("yao"));
+    p2pserver.broadcastTransaction(transaction);
     res.redirect("/transactions");
 });
 

@@ -20,6 +20,11 @@ class TransactionPool {
       return transaction;
     });
   }
+
+  transactionExists(transaction) {
+    let exists = this.transactions.find(t => t.id === transaction.id);
+    return exists;
+  }
 }
 
 module.exports = TransactionPool;
