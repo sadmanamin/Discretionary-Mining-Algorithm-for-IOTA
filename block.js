@@ -29,13 +29,18 @@ class Block {
         return SHA256(`${timestamp}${lastHash}${data}`).toString();
     }
 
-    static createBlock(lastBlock, data) {
+    static createBlock(lastBlock, data, wallet) {
         let hash;
         let timestamp = Date.now();
         const lastHash = lastBlock.hash;
         hash = Block.hash(timestamp, lastHash, data);
-    
-        return new this(timestamp, lastHash, hash, data);
+        
+        // get the validators public key
+        let validator = wallet.getPublicKey();
+        
+        // Sign the block
+        let signature = Block.signBlockHash(hash, wallet);
+        return new this(timestamp, lastHash, hash, data, validator, signature);
     }
 
     static blockHash(block){
@@ -43,6 +48,8 @@ class Block {
         const { timestamp, lastHash, data } = block;
         return Block.hash(timestamp,lastHash,data);
     }
+
+    
   }
 
   module.exports = Block;

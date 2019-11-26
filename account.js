@@ -1,7 +1,11 @@
 class Account {
     constructor() {
-      this.addresses = [];
-      this.balance = {};
+        this.addresses = [
+          "5aad9b5e21f63955e8840e8b954926c60e0e2d906fdbc0ce1e3afe249a67f614"
+        ];
+        this.balance = {
+          "5aad9b5e21f63955e8840e8b954926c60e0e2d906fdbc0ce1e3afe249a67f614": 1000
+        };
     }
   
     initialize(address) {
@@ -36,6 +40,13 @@ class Account {
       let from = transaction.input.from;
       let to = transaction.output.to;
       this.transfer(from, to, amount);
+    }
+    
+    transferFee(block, transaction) {
+        let amount = transaction.output.fee;
+        let from = transaction.input.from;
+        let to = block.validator;
+        this.transfer(from, to, amount);
     }
   
   }

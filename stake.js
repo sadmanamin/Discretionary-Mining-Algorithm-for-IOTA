@@ -1,7 +1,11 @@
 class Stake {
     constructor() {
-      this.addresses = [];
-      this.balance = {};
+        this.addresses = [
+          "5aad9b5e21f63955e8840e8b954926c60e0e2d906fdbc0ce1e3afe249a67f614"
+        ];
+        this.balance = {
+          "5aad9b5e21f63955e8840e8b954926c60e0e2d906fdbc0ce1e3afe249a67f614": 0
+        };
     }
   
     initialize(address) {

@@ -7,9 +7,10 @@ const P2P_PORT = process.env.P2P_PORT || 5001;
 const peers = process.env.PEERS ? process.env.PEERS.split(',') : [];
 
 const MESSAGE_TYPE = {
-    chain: 'CHAIN',
-    transaction: 'TRANSACTION'
-}
+    chain: "CHAIN",
+    block: "BLOCK",
+    transaction: "TRANSACTION"
+};
 
 class P2pserver{
     constructor(blockchain,transactionPool){
@@ -87,11 +88,22 @@ class P2pserver{
                    this.broadcastTransaction(data.transaction);
                    if (thresholdReached) {
                     if (this.blockchain.getLeader() == this.wallet.getPublicKey()) {
-                      console.log("I am the leader");
+                      console.log("Creating block");
+                      let block = this.blockchain.createBlock(
+                        this.transactionPool.transactions,
+                        this.wallet
+                      );
+                      this.broadcastBlock(block);
                     }
-                   }
+                  }
                 }
-                 break;
+                break;
+
+            case MESSAGE_TYPE.block:
+                if (this.blockchain.isValidBlock(data.block)) {
+                    this.broadcastBlock(data.block);
+                }
+                break;
           }
         });
     }
@@ -132,6 +144,21 @@ class P2pserver{
            })
        );
      }
+
+     broadcastBlock(block) {
+        this.sockets.forEach(socket => {
+          this.sendBlock(socket, block);
+        });
+      }
+    
+      sendBlock(socket, block) {
+        socket.send(
+          JSON.stringify({
+            type: MESSAGE_TYPE.block,
+            block: block
+          })
+        );
+      }
 
 }
 

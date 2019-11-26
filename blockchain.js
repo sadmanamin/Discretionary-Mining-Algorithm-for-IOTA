@@ -50,6 +50,66 @@ class Blockchain{
         return this.stakes.getMax(this.validators.list);
     }
 
+    createBlock(transactions, wallet) {
+        const block = Block.createBlock(
+          this.chain[this.chain.length - 1],
+          transactions,
+          wallet
+        );
+        return block;
+    }
+
+    isValidBlock(block) {
+        const lastBlock = this.chain[this.chain.length - 1];
+        /**
+         * check hash
+         * check last hash
+         * check signature
+         * check leader
+         */
+        if (
+          block.lastHash === lastBlock.hash &&
+          block.hash === Block.blockHash(block) &&
+          Block.verifyBlock(block) &&
+          Block.verifyLeader(block, this.getLeader())
+        ) {
+          console.log("block valid");
+          this.addBlock(block);
+          return true;
+        } else {
+          return false;
+        }
+    }
+
+    executeTransactions(block) {
+        block.data.forEach(transaction => {
+          switch (transaction.type) {
+            case TRANSACTION_TYPE.transaction:
+              this.accounts.update(transaction);
+              this.accounts.transferFee(block, transaction);
+              break;
+            case TRANSACTION_TYPE.stake:
+              this.stakes.update(transaction);
+              this.accounts.decrement(
+                transaction.input.from,
+                transaction.output.amount
+              );
+              this.accounts.transferFee(block, transaction);
+    
+              break;
+            case TRANSACTION_TYPE.validator_fee:
+              if (this.validators.update(transaction)) {
+                this.accounts.decrement(
+                  transaction.input.from,
+                  transaction.output.amount
+                );
+                this.accounts.transferFee(block, transaction);
+              }
+              break;
+          }
+        });
+    }
+
 }
 
 module.exports = Blockchain;

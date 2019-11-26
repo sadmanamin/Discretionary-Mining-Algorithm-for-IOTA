@@ -14,6 +14,10 @@ class TransactionPool {
       return false;
     }
   }
+
+  clear() {
+    this.transactions = [];
+  }
   validTransactions() {
     return this.transactions.filter(transaction => {
       if (!Transaction.verifyTransaction(transaction)) {
