@@ -1,5 +1,6 @@
 const express = require('express');
 const Blockchain = require('../blockchain');
+
 const bodyParser = require('body-parser');
 const P2pserver = require('./p2pserver.js');
 const blockchain = new Blockchain();
@@ -36,7 +37,7 @@ app.get('/blocks',(req,res)=>{
 
 app.get('/transactions',(req,res)=>{
     console.log(transactionPool.transactions);
-    console.log(blockchain.chain);
+    //console.log(blockchain.chain);
     res.json(stringify(transactionPool.transactions));
   });
 
@@ -44,7 +45,7 @@ app.get('/transactions',(req,res)=>{
 app.post('/mine',(req,res)=>{
     let dataa = JSON.stringify(req.body.data);
     console.log(dataa);
-    const blockb = blockchain.addBlock(dataa);
+    const blockb = blockchain.addBlock(dataa,wallet);
     console.log(Date.now().toString());
     console.log(`New block added: ${blockb.toString()}`);
     p2pserver.syncChain();

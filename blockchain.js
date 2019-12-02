@@ -1,16 +1,25 @@
 const Block = require('./block');
+const Stake = require("./stake");
+const Account = require("./account");
+const Validators = require("./validators");
+const { account } = require("./object");
+const { stake } = require("./object");
+
 let chain; 
 class Blockchain{
     
     constructor(){
         this.chain = [Block.genesis()];
+        this.stakes = new Stake();
+        this.accounts = new Account();
+        this.validators = new Validators();
     }
 
-    addBlock(data) {
-      const blocka = Block.createBlock(this.chain[this.chain.length-1],data);
-          this.chain.push(blocka);
+    addBlock(data,wallet) {
+        const blocka = Block.createBlock(this.chain[this.chain.length-1],data,wallet);
+        this.chain.push(blocka);
 
-          return blocka;
+        return blocka;
     }
 
     isValidChain(chain){
@@ -43,11 +52,11 @@ class Blockchain{
     }
 
     getBalance(publicKey) {
-        return this.accounts.getBalance(publicKey);
+        return account.getBalance(publicKey);
     }
 
     getLeader() {
-        return this.stakes.getMax(this.validators.list);
+        return stake.getMax(this.validators.list);
     }
 
     createBlock(transactions, wallet) {

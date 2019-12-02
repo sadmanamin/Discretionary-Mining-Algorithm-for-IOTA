@@ -1,5 +1,5 @@
 const Transaction = require("../transaction");
-
+const { TRANSACTION_THRESHOLD } = require("../config");
 class TransactionPool {
   constructor() {
     console.log("at t")

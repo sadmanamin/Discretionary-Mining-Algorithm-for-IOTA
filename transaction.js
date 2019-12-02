@@ -1,5 +1,7 @@
 const ChainUtil = require("./chain-util");
 const { TRANSACTION_FEE } = require("./config");
+const { account } = require("./object");
+const { stake } = require("./object");
 
 class Transaction {
   constructor() {
@@ -27,6 +29,8 @@ class Transaction {
       fee: TRANSACTION_FEE
     };
     Transaction.signTransaction(transaction, senderWallet);
+    account.update(transaction);
+    stake.update(transaction);
     return transaction;
   }
 

@@ -34,13 +34,16 @@ class Block {
         let timestamp = Date.now();
         const lastHash = lastBlock.hash;
         hash = Block.hash(timestamp, lastHash, data);
-        
         // get the validators public key
         let validator = wallet.getPublicKey();
         
         // Sign the block
         let signature = Block.signBlockHash(hash, wallet);
         return new this(timestamp, lastHash, hash, data, validator, signature);
+    }
+
+    static signBlockHash(hash, wallet) {
+        return wallet.sign(hash);
     }
 
     static blockHash(block){
