@@ -5,7 +5,8 @@ const P2pserver = require("../app/p2pserver");
 const Wallet = require("../wallet/wallet");
 const TransactionPool = require("../wallet/transaction-pool");
 const { TRANSACTION_THRESHOLD } = require("../config");
-
+const Miner = require('../miner');
+const miner = new Miner();
 const HTTP_PORT = 3000;
 
 const app = express();
@@ -16,7 +17,7 @@ const blockchain = new Blockchain();
 const wallet = new Wallet("i am the first leader");
 
 const transactionPool = new TransactionPool();
-const p2pserver = new P2pserver(blockchain, transactionPool, wallet);
+const p2pserver = new P2pserver(blockchain, transactionPool, miner);
 
 app.get("/ico/transactions", (req, res) => {
   res.json(transactionPool.transactions);

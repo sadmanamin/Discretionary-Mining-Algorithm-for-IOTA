@@ -9,15 +9,16 @@ const peers = process.env.PEERS ? process.env.PEERS.split(',') : [];
 const MESSAGE_TYPE = {
     chain: "CHAIN",
     block: "BLOCK",
-    transaction: "TRANSACTION"
+    transaction: "TRANSACTION",
+    miner: "MINER"
 };
 
 class P2pserver{
-    constructor(blockchain,transactionPool){
+    constructor(blockchain,transactionPool,miner){
         this.blockchain = blockchain;
         this.sockets = [];
         this.transactionPool = transactionPool;
-
+        this.miner = miner;
     }
 
     
@@ -44,7 +45,7 @@ class P2pserver{
 
         // push the socket too the socket array
         this.sockets.push(socket);
-        console.log("Socket connected");
+        console.log("Socket connected ");
 
         // register a message event listener to the socket
         this.messageHandler(socket);
@@ -104,6 +105,12 @@ class P2pserver{
                     this.broadcastBlock(data.block);
                 }
                 break;
+
+            case MESSAGE_TYPE.miner:
+                console.log(data.fee+" "+data.time+" "+data.port+" "+this.miner);
+                this.miner.insertParticipant(data.fee,data.time,data.port);
+                
+                break;
           }
         });
     }
@@ -144,6 +151,22 @@ class P2pserver{
            })
        );
      }
+
+     broadcastMiner(fee,time,port){
+      this.sockets.forEach(socket =>{
+          this.sendMiner(socket,fee,time,port);
+      });
+    }
+
+
+    sendMiner(socket,fee,time,port){
+       socket.send(JSON.stringify({
+           type: MESSAGE_TYPE.miner,
+           fee: fee,
+           time: time,
+           port: port
+       }));
+      }
 
      broadcastBlock(block) {
         this.sockets.forEach(socket => {
